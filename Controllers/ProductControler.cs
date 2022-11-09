@@ -9,23 +9,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ProductControler:ControllerBase
+    
+    public class ProductControler:BaseApiController
     {
         private readonly StoreContext _context;
         public ProductControler(StoreContext context)
         {
             _context=context;
         }
-
         [HttpGet]
         public async Task<ActionResult<List<Product>>> GetProducts(){
             return await _context.Product.ToListAsync();
         }
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id){
-            return await _context.Product.FindAsync(id);
+            Product product=await _context.Product.FindAsync(id);
+            if(product==null) 
+               return NotFound();
+
+            return product;
         }
     }
 }
